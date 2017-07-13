@@ -423,6 +423,73 @@ go_library(
     srcs = ["foo.go"],
 )
 `,
+	}, {
+		desc: "preserve comments",
+		previous: `
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "a.go",  # preserve
+        "b.go",  # comments
+    ],
+)
+`,
+		current: `
+go_library(
+    name = "go_default_library",
+    srcs = ["a.go", "b.go"],
+)
+`,
+		expected: `
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "a.go",  # preserve
+        "b.go",  # comments
+    ],
+)
+`,
+	}, {
+		desc: "merge copts and clinkopts",
+		previous: `
+load("@io_bazel_rules_go//go:def.bzl", "cgo_library")
+
+cgo_library(
+    name = "cgo_default_library",
+    copts = [
+        "-O0",
+        "-g",  # keep
+    ],
+    clinkopts = [
+        "-lX11",
+    ],
+)
+`,
+		current: `
+load("@io_bazel_rules_go//go:def.bzl", "cgo_library")
+
+cgo_library(
+    name = "cgo_default_library",
+    copts = [
+        "-O2",
+    ],
+    clinkopts = [
+        "-lpng",
+    ],
+)
+`,
+		expected: `
+load("@io_bazel_rules_go//go:def.bzl", "cgo_library")
+
+cgo_library(
+    name = "cgo_default_library",
+    copts = [
+        "-g",  # keep
+        "-O2",
+    ],
+    clinkopts = ["-lpng"],
+)
+`,
 	},
 }
 
