@@ -29,19 +29,19 @@ type check struct {
 }
 
 var checks = []check{
-	{"darwin_amd64_pure_stripped/cross", []string{
+	{"cross_darwin", []string{
 		"Mach-O",
 		"64-bit",
 		"executable",
 		"x86_64",
 	}},
-	{"linux_amd64_pure_stripped/cross", []string{
+	{"cross_linux", []string{
 		"ELF",
 		"64-bit",
 		"executable",
 		"x86-64",
 	}},
-	{"windows_amd64_pure_stripped/cross.exe", []string{
+	{"cross_windows.exe", []string{
 		"PE32+",
 		"Windows",
 		"executable",

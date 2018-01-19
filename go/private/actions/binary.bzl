@@ -24,7 +24,9 @@ def emit_binary(go,
   if name == "": fail("name is a required parameter")
 
   archive = go.archive(go, source)
-  executable = go.declare_file(go, name=name, ext=go.exe_extension)
+  executable = go.declare_file(go,
+      name=name, ext=go.exe_extension,
+      include_compilation_mode=False)
   go.link(go,
       archive=archive,
       executable=executable,

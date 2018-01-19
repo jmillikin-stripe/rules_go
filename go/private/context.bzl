@@ -47,8 +47,11 @@ INFERRED_PATH = "inferred"
 
 EXPORT_PATH = "export"
 
-def _declare_file(go, path="", ext="", name = ""):
-  filename = mode_string(go.mode) + "/"
+def _declare_file(go, path="", ext="", name = "", include_compilation_mode=True):
+  if include_compilation_mode:
+    filename = mode_string(go.mode) + "/"
+  else:
+    filename = ""
   filename += name if name else go._ctx.label.name
   if path:
     filename += "~/" + path
