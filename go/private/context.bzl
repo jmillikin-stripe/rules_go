@@ -67,6 +67,10 @@ load(
     "@bazel_skylib//lib:paths.bzl",
     "paths",
 )
+load(
+    "@bazel_skylib//rules:common_settings.bzl",
+    "BuildSettingInfo",
+)
 
 GoContext = provider()
 _GoContextData = provider()
@@ -425,6 +429,7 @@ def go_context(ctx, attr = None):
         env = env,
         tags = tags,
         stamp = context_data.stamp,
+        build_settings = context_data.build_settings,
         # Action generators
         archive = toolchain.actions.archive,
         asm = toolchain.actions.asm,
@@ -496,6 +501,9 @@ def _go_context_data_impl(ctx):
         tags = tags,
         env = env,
         cgo_tools = cgo_tools,
+        build_settings = struct(
+            per_mode_binaries = ctx.attr._per_mode_binaries[BuildSettingInfo].value,
+        ),
     )]
 
 go_context_data = rule(
@@ -504,6 +512,7 @@ go_context_data = rule(
         "stamp": attr.bool(mandatory = True),
         "strip": attr.string(mandatory = True),
         "cgo_context_data": attr.label(),
+        "_per_mode_binaries": attr.label(default = "@io_bazel_rules_go//go/build_settings:per_mode_binaries"),
     },
     doc = """go_context_data gathers information about the build configuration.
 It is a common dependency of all Go targets.""",

@@ -79,12 +79,22 @@ def _go_binary_impl(ctx):
     name = ctx.attr.basename
     if not name:
         name = ctx.label.name
-    executable = None
+
+    executable_path = None
     if ctx.attr.out:
+        executable_path = ctx.attr.out
+    elif not go.build_settings.per_mode_binaries:
+        executable_path = ctx.attr.name
+        if go.exe_extension:
+            executable_path += go.exe_extension
+
+    executable = None
+    if executable_path:
         # Use declare_file instead of attr.output(). When users set output files
         # directly, Bazel warns them not to use the same name as the rule, which is
         # the common case with go_binary.
-        executable = ctx.actions.declare_file(ctx.attr.out)
+        executable = ctx.actions.declare_file(executable_path)
+
     archive, executable, runfiles = go.binary(
         go,
         name = name,
